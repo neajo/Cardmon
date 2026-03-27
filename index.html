@@ -1,1 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cardmon Battle</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="game-container">
+    <div class="arena">
+      <!-- Oponente -->
+      <div class="cardmon-card opponent" id="opponent-card">
+        <div class="cardmon-name">
+          <span class="emoji" id="opponent-emoji">?</span>
+          <span id="opponent-name">---</span>
+        </div>
+        <div class="stats">❤️ <span id="opponent-hp">0</span>/<span id="opponent-hp-max">0</span></div>
+        <div class="hp-bar"><div class="hp-fill" id="opponent-hp-fill" style="width: 0%"></div></div>
+        <div class="stats">⚡ <span id="opponent-energy">0</span>/<span id="opponent-energy-max">0</span></div>
+        <div class="hp-bar"><div class="energy-bar" id="opponent-energy-fill" style="width: 0%"></div></div>
+      </div>
 
+      <!-- Jogador -->
+      <div class="cardmon-card" id="player-card">
+        <div class="cardmon-name">
+          <span class="emoji" id="player-emoji">?</span>
+          <span id="player-name">---</span>
+        </div>
+        <div class="stats">❤️ <span id="player-hp">0</span>/<span id="player-hp-max">0</span></div>
+        <div class="hp-bar"><div class="hp-fill" id="player-hp-fill" style="width: 0%"></div></div>
+        <div class="stats">⚡ <span id="player-energy">0</span>/<span id="player-energy-max">0</span></div>
+        <div class="hp-bar"><div class="energy-bar" id="player-energy-fill" style="width: 0%"></div></div>
+      </div>
+    </div>
+
+    <div class="action-panel">
+      <div class="moves" id="move-buttons"></div>
+      <div class="action-buttons">
+        <button class="action" id="sleep-btn">💤 Dormir</button>
+        <button class="action" id="switch-btn">🔄 Trocar</button>
+        <button class="action" id="items-btn">🧪 Itens</button>
+        <button class="action" id="flee-btn">🏃 Fugir</button>
+      </div>
+      <div id="switch-container" class="switch-list hidden"></div>
+      <div id="items-container" class="switch-list hidden"></div>
+      <div class="log" id="log"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
