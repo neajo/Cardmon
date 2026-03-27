@@ -1,4 +1,4 @@
-// ========== CLASSES (CARDMON E BATALHA) ==========
+// ========== CLASSES ==========
 class Ataque {
     constructor(nome, tipo, emoji, dano, custo, precisao = 100, efeito = null) {
         this.nome = nome;
@@ -46,11 +46,10 @@ class Ataque {
 }
 
 class Cardmon {
-    constructor(nome, vidaMax, energiaMax, tipo, emoji, atks, spriteUrl, evo = null) {
+    constructor(nome, vidaMax, energiaMax, tipo, emoji, atks, evo = null) {
         this.nome = nome;
         this.tipo = tipo;
         this.emoji = emoji;
-        this.spriteUrl = spriteUrl;
         this.nivel = 1;
         this.exp = 0;
         this.vidaMax = vidaMax;
@@ -196,17 +195,17 @@ const empinar = new Ataque('Empinar', 'metal', '⛓', 0, 2, 100, {pessoal:'dano'
 const afiar = new Ataque('Afiar', 'normal', '🔘', 0, 2, 100, {pessoal:'dano', num:2});
 
 // Evoluções
-const Karekudo = new Cardmon('Karekudo', 80, 50, ['agua','psi'], '💧🧠', [], 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/9.png');
-const Kareka = new Cardmon('Kareka', 45, 30, ['agua'], '💧', [], 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/8.png', {Karekudo:34});
-const KleKle = new Cardmon('KleKle', 10, 15, ['agua'], '💧', [tapa, borbulhar], 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/7.png', {Kareka:14});
+const Karekudo = new Cardmon('Karekudo', 80, 50, ['agua','psi'], '💧🧠', []);
+const Kareka = new Cardmon('Kareka', 45, 30, ['agua'], '💧', [], {Karekudo:34});
+const KleKle = new Cardmon('KleKle', 10, 15, ['agua'], '💧', [tapa, borbulhar], {Kareka:14});
 
-const Motoka = new Cardmon('Motoka', 84, 45, ['metal','fogo'], '⛓️🔥', [], 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/462.png');
-const Monark = new Cardmon('Monark', 50, 28, ['metal'], '⛓️', [], 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/82.png', {Motoka:35});
-const Totoka = new Cardmon('Totoka', 12, 14, ['metal'], '⛓️', [muqueta, empinar], 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/81.png', {Monark:14});
+const Motoka = new Cardmon('Motoka', 84, 45, ['metal','fogo'], '⛓️🔥', []);
+const Monark = new Cardmon('Monark', 50, 28, ['metal'], '⛓️', [], {Motoka:35});
+const Totoka = new Cardmon('Totoka', 12, 14, ['metal'], '⛓️', [muqueta, empinar], {Monark:14});
 
-const Mapinguari = new Cardmon('Mapinguari', 87, 46, ['grama','lutador'], '🌳🥊', [], 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/3.png');
-const Cacidro = new Cardmon('Cacídro', 42, 34, ['grama','lutador'], '🌳🥊', [], 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/2.png', {Mapinguari:36});
-const Balaio = new Cardmon('Balaio', 14, 15, ['grama'], '🌳', [tapa, afiar], 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/1.png', {Cacidro:15});
+const Mapinguari = new Cardmon('Mapinguari', 87, 46, ['grama','lutador'], '🌳🥊', []);
+const Cacidro = new Cardmon('Cacídro', 42, 34, ['grama','lutador'], '🌳🥊', [], {Mapinguari:36});
+const Balaio = new Cardmon('Balaio', 14, 15, ['grama'], '🌳', [tapa, afiar], {Cacidro:15});
 
 const pocaoP = new Item('Poção-P', 5, {vida:5});
 
@@ -219,7 +218,6 @@ const ctx = canvas.getContext('2d');
 const worldScreen = document.getElementById('world-screen');
 const battleScreen = document.getElementById('battle-screen');
 
-// Configuração do mapa
 const TILE_SIZE = 32;
 const MAP_WIDTH = 25;
 const MAP_HEIGHT = 19;
@@ -229,10 +227,6 @@ canvas.height = TILE_SIZE * MAP_HEIGHT;
 let playerX = 12, playerY = 9;
 let npcX = 18, npcY = 12;
 let inBattle = false;
-
-// Imagens dos sprites (usando emojis simples para evitar carregamento externo)
-const playerSprite = '🧑';
-const npcSprite = '👤';
 
 function drawMap() {
     // Fundo de grama
@@ -244,13 +238,13 @@ function drawMap() {
             ctx.strokeRect(i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE);
         }
     }
-    // Desenha NPC
+    // Desenha NPC (emoji)
     ctx.font = `${TILE_SIZE}px monospace`;
     ctx.fillStyle = '#ff6666';
-    ctx.fillText(npcSprite, npcX * TILE_SIZE, npcY * TILE_SIZE + TILE_SIZE - 4);
-    // Desenha player
+    ctx.fillText('👤', npcX * TILE_SIZE, npcY * TILE_SIZE + TILE_SIZE - 4);
+    // Desenha player (emoji)
     ctx.fillStyle = '#44aaff';
-    ctx.fillText(playerSprite, playerX * TILE_SIZE, playerY * TILE_SIZE + TILE_SIZE - 4);
+    ctx.fillText('🧑', playerX * TILE_SIZE, playerY * TILE_SIZE + TILE_SIZE - 4);
 }
 
 function movePlayer(dx, dy) {
@@ -310,7 +304,7 @@ function updateBattleUI() {
     document.getElementById('player-energy-max').innerText = p.energiaMax;
     document.getElementById('player-hp-fill').style.width = (p.vida / p.vidaMax * 100) + '%';
     document.getElementById('player-energy-fill').style.width = (p.energia / p.energiaMax * 100) + '%';
-    document.getElementById('player-sprite').src = p.spriteUrl;
+    document.getElementById('player-sprite').innerText = p.emoji;
 
     // Oponente
     const o = currentEnemy.ativo;
@@ -322,7 +316,7 @@ function updateBattleUI() {
     document.getElementById('opponent-energy-max').innerText = o.energiaMax;
     document.getElementById('opponent-hp-fill').style.width = (o.vida / o.vidaMax * 100) + '%';
     document.getElementById('opponent-energy-fill').style.width = (o.energia / o.energiaMax * 100) + '%';
-    document.getElementById('opponent-sprite').src = o.spriteUrl;
+    document.getElementById('opponent-sprite').innerText = o.emoji;
 }
 
 function renderMoveButtons() {
@@ -413,7 +407,6 @@ function endBattle(winner) {
     const finalMsg = winner === 'player' ? '🎉 PARABÉNS! VOCÊ VENCEU!' : '💀 VOCÊ FOI DERROTADO...';
     addLog(finalMsg);
 
-    // Volta para o mundo após 3 segundos
     setTimeout(() => {
         battleScreen.classList.add('hidden');
         worldScreen.classList.remove('hidden');
@@ -421,7 +414,6 @@ function endBattle(winner) {
         // Reposiciona o jogador para não colidir novamente
         playerX = 12; playerY = 9;
         drawMap();
-        // Reativa os botões para a próxima batalha
         document.querySelectorAll('#action-buttons button, .extra-actions button').forEach(btn => btn.disabled = false);
     }, 3000);
 }
@@ -434,7 +426,7 @@ function initBattle() {
     document.getElementById('battle-log').innerHTML = '';
     addLog("🔥 Batalha iniciada! Escolha sua ação.");
 
-    // Configura os jogadores (cópias profundas para não alterar original)
+    // Cria cópias dos times para não alterar os originais
     currentPlayer = new Player(player.nome, player.cardmons.map(c => c), {...player.itens});
     currentEnemy = new BOT(bot.nome, bot.cardmons.map(c => c), {...bot.itens});
 
@@ -444,7 +436,7 @@ function initBattle() {
     updateBattleUI();
     renderMoveButtons();
 
-    // Adiciona eventos dos botões extras
+    // Configura botões extras
     document.getElementById('sleep-btn').onclick = () => {
         if (!battleActive || !waitingForPlayer || playerTurnLock) return;
         playerTurnLock = true;
