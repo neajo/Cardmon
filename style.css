@@ -1,66 +1,272 @@
-* { box-sizing: border-box; image-rendering: pixelated; }
-body { background: #000; margin: 0; font-family: 'Press Start 2P', cursive; overflow: hidden; }
-
-#game-container { width: 100vw; height: 100vh; position: relative; }
-
-/* MAPA */
-#world-screen { width: 100%; height: 100%; background: #4caf50; position: relative; }
-#map { 
-    width: 2000px; height: 2000px; 
-    background-image: radial-gradient(#388e3c 10%, transparent 10%);
-    background-size: 40px 40px;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
 }
 
-.character {
-    width: 40px; height: 40px;
+body {
+    background: #0a1f0a;
+    font-family: 'VT323', 'Courier New', monospace;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+#game-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background: #2c4a2c;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+/* Tela do mundo */
+#world-screen {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#world-canvas {
+    background: #5b8c5a;
+    box-shadow: 0 0 0 4px #f5b642, 0 0 0 8px #3d2b1f;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+}
+
+.controls-info {
     position: absolute;
-    background: #2196f3; border: 2px solid #000;
-}
-.npc { background: #f44336; left: 300px; top: 200px; }
-
-.instructions {
-    position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
-    background: rgba(0,0,0,0.7); color: white; padding: 10px; font-size: 10px;
-}
-
-/* BATALHA */
-#battle-screen { 
-    width: 100%; height: 100%; background: #e0d0b0; 
-    display: flex; flex-direction: column; 
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.7);
+    color: #ffefb0;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.7rem;
+    padding: 8px 16px;
+    border-radius: 20px;
+    pointer-events: none;
+    white-space: nowrap;
 }
 
-.hidden { display: none !important; }
-
-.arena { flex: 1; position: relative; padding: 50px; }
-
-.side { position: absolute; display: flex; align-items: flex-end; }
-.enemy { top: 50px; right: 100px; }
-.player { bottom: 150px; left: 100px; }
-
-.side img { width: 150px; }
-
-.status-box {
-    background: #fdf6e3; border: 4px solid #3d2b1f; padding: 10px; width: 220px;
+/* Tela de batalha */
+#battle-screen {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(145deg, #88aa66, #5a7a4a);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
 }
 
-.hp-bar, .en-bar { background: #333; height: 10px; border: 2px solid #000; margin-top: 5px; }
-.fill { height: 100%; width: 100%; transition: width 0.5s; }
-.hp-bar .fill { background: #4caf50; }
-.en-bar .fill { background: #ffeb3b; }
+.battle-container {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    position: relative;
+}
 
-.ui { background: #3d2b1f; height: 150px; border-top: 6px solid #ffd700; display: flex; padding: 10px; }
-#log { flex: 1; background: #000; color: #fff; padding: 15px; font-size: 14px; overflow-y: auto; }
-.grid { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-left: 10px; }
+.opponent-area, .player-area {
+    width: 300px;
+    text-align: center;
+    background: rgba(0,0,0,0.4);
+    border-radius: 30px;
+    padding: 15px;
+    backdrop-filter: blur(4px);
+}
+
+.battle-sprite {
+    width: 160px;
+    height: 160px;
+    image-rendering: pixelated;
+    filter: drop-shadow(4px 4px 0 #000);
+    animation: float 2s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
+}
+
+.status-card {
+    background: #fdf6e3;
+    border: 4px solid #5a3a2a;
+    border-radius: 16px;
+    padding: 8px 12px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.7rem;
+    margin-top: 10px;
+}
+
+.name-area {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.name {
+    font-weight: bold;
+    color: #2c2c1c;
+}
+
+.level {
+    color: #8b5a2b;
+}
+
+.hp-bar-bg, .energy-bar-bg {
+    background: #3a2a1a;
+    height: 12px;
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 5px 0;
+}
+
+.hp-fill {
+    background: #ff5e5e;
+    width: 100%;
+    height: 100%;
+    transition: width 0.2s ease;
+}
+
+.energy-fill {
+    background: #ffd966;
+    width: 100%;
+    height: 100%;
+    transition: width 0.2s ease;
+}
+
+.hp-text, .energy-text {
+    text-align: right;
+    font-size: 0.6rem;
+    color: #1f1f14;
+}
+
+.vs-animation {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 2rem;
+    background: #ffaa33;
+    color: #2c1a0a;
+    padding: 8px 20px;
+    border-radius: 60px;
+    box-shadow: 4px 4px 0 #8b4c00;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.battle-log {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    background: #0f120c;
+    border: 3px solid #ffcc66;
+    border-radius: 20px;
+    padding: 12px;
+    height: 100px;
+    overflow-y: auto;
+    font-family: monospace;
+    font-size: 0.9rem;
+    color: #baffa9;
+    z-index: 10;
+}
+
+.action-buttons {
+    position: absolute;
+    bottom: 140px;
+    right: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    max-width: 400px;
+    justify-content: flex-end;
+}
+
+.extra-actions {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    gap: 12px;
+}
 
 button {
-    font-family: 'Press Start 2P'; font-size: 10px; cursor: pointer;
-    background: #fff; border: 3px solid #000;
+    background: #2b3b2a;
+    border: 2px solid #ffcc66;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.7rem;
+    padding: 8px 12px;
+    color: #f9eec1;
+    cursor: pointer;
+    transition: 0.05s linear;
+    box-shadow: 3px 3px 0 #0a1a0a;
 }
-button:hover { background: #ffd700; }
 
-/* Animações */
-.flash { animation: flash 0.5s 3; }
-@keyframes flash {
+button:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 #0a1a0a;
+}
+
+.menu-popup {
+    position: absolute;
+    bottom: 100px;
+    right: 20px;
+    background: #2b3522;
+    border: 3px solid #ffcc66;
+    padding: 15px;
+    border-radius: 20px;
+    min-width: 200px;
+    z-index: 20;
+    font-family: monospace;
+}
+
+.menu-popup strong {
+    display: block;
+    margin-bottom: 10px;
+    color: #ffdd99;
+}
+
+.menu-option {
+    background: #495c3a;
+    display: block;
+    margin: 5px;
+    padding: 5px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    color: white;
+}
+
+.hidden {
+    display: none;
+}
+
+.flash {
+    animation: screenFlash 0.3s 3;
+}
+
+@keyframes screenFlash {
     0%, 100% { background: white; }
     50% { background: black; }
+}
+
+/* Responsivo */
+@media (max-width: 800px) {
+    .battle-sprite { width: 120px; height: 120px; }
+    .opponent-area, .player-area { width: 260px; }
+    .action-buttons, .extra-actions { font-size: 0.6rem; }
+    button { font-size: 0.6rem; padding: 6px 10px; }
 }
