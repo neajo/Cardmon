@@ -194,7 +194,6 @@ function addLog(msg) {
   p.textContent = msg;
   logDiv.appendChild(p);
   p.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  // Limite de mensagens
   if (logDiv.children.length > 40) logDiv.removeChild(logDiv.children[0]);
 }
 
@@ -232,7 +231,7 @@ function renderMoves() {
   player.ativo.atks.forEach((atk, idx) => {
     const btn = document.createElement('button');
     btn.className = 'move-btn';
-    btn.innerHTML = `${atk.emoji} ${atk.nome} <span style="font-size:0.8rem;">(${atk.custo}⚡)</span>`;
+    btn.innerHTML = `${atk.emoji} ${atk.nome} (${atk.custo}⚡)`;
     if (player.ativo.energia < atk.custo) btn.classList.add('disabled');
     btn.onclick = () => {
       if (!battleActive || !waitingForPlayer || playerTurnLock) return;
@@ -282,7 +281,7 @@ async function botTurn() {
       player.ativo = vivosPlayer[0];
       addLog(`${player.nome} envia ${player.ativo.nome}!`);
       updateUI();
-      renderMoves(); // atualiza botões com novo cardmon
+      renderMoves();
     } else {
       endBattle('bot');
       return;
@@ -299,10 +298,8 @@ function endBattle(winner) {
   battleActive = false;
   waitingForPlayer = false;
   addLog(`🏆 FIM DE JOGO! Vencedor: ${winner === 'player' ? player.nome : bot.nome}!`);
-  // Desabilitar todos os botões de ação
   document.querySelectorAll('.move-btn, .action-btn').forEach(btn => btn.disabled = true);
-  // Mostrar mensagem de fim
-  const finalMsg = winner === 'player' ? '🎉 Parabéns! Você venceu!' : '💀 Você foi derrotado... Tente novamente!';
+  const finalMsg = winner === 'player' ? '🎉 PARABÉNS! VOCÊ VENCEU!' : '💀 VOCÊ FOI DERROTADO... TENTE NOVAMENTE!';
   addLog(finalMsg);
 }
 
@@ -324,7 +321,7 @@ function mostrarTrocar() {
     return;
   }
   switchContainer.classList.remove('hidden');
-  switchContainer.innerHTML = '<strong>🔁 Escolha um Cardmon:</strong><br>';
+  switchContainer.innerHTML = '<strong>🔁 ESCOLHA UM CARDMON:</strong><br>';
   vivos.forEach(c => {
     const btn = document.createElement('span');
     btn.className = 'switch-option';
@@ -352,7 +349,7 @@ function mostrarItens() {
     return;
   }
   itemsContainer.classList.remove('hidden');
-  itemsContainer.innerHTML = '<strong>🧪 Usar item:</strong><br>';
+  itemsContainer.innerHTML = '<strong>🧪 USAR ITEM:</strong><br>';
   for (let [item, qtd] of Object.entries(player.itens)) {
     if (qtd <= 0) continue;
     const btn = document.createElement('span');
@@ -401,9 +398,8 @@ function init() {
   itemsBtn.onclick = mostrarItens;
   fleeBtn.onclick = fugir;
 
-  // Limpar log inicial
   logDiv.innerHTML = '';
-  addLog("🔥 Batalha iniciada! Escolha sua ação.");
+  addLog("🔥 BATALHA INICIADA! ESCOLHA SUA AÇÃO.");
 }
 
 init();
