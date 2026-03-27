@@ -186,6 +186,7 @@ const sleepBtn = document.getElementById('sleep-btn');
 const switchBtn = document.getElementById('switch-btn');
 const itemsBtn = document.getElementById('items-btn');
 const fleeBtn = document.getElementById('flee-btn');
+const itemCountSpan = document.getElementById('item-count');
 
 // ========== FUNÇÕES AUXILIARES ==========
 function addLog(msg) {
@@ -193,7 +194,8 @@ function addLog(msg) {
   p.textContent = msg;
   logDiv.appendChild(p);
   p.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  if (logDiv.children.length > 30) logDiv.removeChild(logDiv.children[0]);
+  // Limite de mensagens
+  if (logDiv.children.length > 40) logDiv.removeChild(logDiv.children[0]);
 }
 
 function updateUI() {
@@ -218,6 +220,11 @@ function updateUI() {
   document.getElementById('opponent-energy-max').innerText = o.energiaMax;
   document.getElementById('opponent-hp-fill').style.width = (o.vida / o.vidaMax * 100) + '%';
   document.getElementById('opponent-energy-fill').style.width = (o.energia / o.energiaMax * 100) + '%';
+
+  // Atualizar contador de itens
+  let totalItems = 0;
+  for (let qtd of Object.values(player.itens)) totalItems += qtd;
+  itemCountSpan.innerText = totalItems;
 }
 
 function renderMoves() {
@@ -225,7 +232,7 @@ function renderMoves() {
   player.ativo.atks.forEach((atk, idx) => {
     const btn = document.createElement('button');
     btn.className = 'move-btn';
-    btn.innerText = `${atk.emoji} ${atk.nome} (${atk.custo}⚡)`;
+    btn.innerHTML = `${atk.emoji} ${atk.nome} <span style="font-size:0.8rem;">(${atk.custo}⚡)</span>`;
     if (player.ativo.energia < atk.custo) btn.classList.add('disabled');
     btn.onclick = () => {
       if (!battleActive || !waitingForPlayer || playerTurnLock) return;
@@ -275,6 +282,7 @@ async function botTurn() {
       player.ativo = vivosPlayer[0];
       addLog(`${player.nome} envia ${player.ativo.nome}!`);
       updateUI();
+      renderMoves(); // atualiza botões com novo cardmon
     } else {
       endBattle('bot');
       return;
@@ -291,7 +299,11 @@ function endBattle(winner) {
   battleActive = false;
   waitingForPlayer = false;
   addLog(`🏆 FIM DE JOGO! Vencedor: ${winner === 'player' ? player.nome : bot.nome}!`);
-  document.querySelectorAll('.move-btn, .action').forEach(btn => btn.disabled = true);
+  // Desabilitar todos os botões de ação
+  document.querySelectorAll('.move-btn, .action-btn').forEach(btn => btn.disabled = true);
+  // Mostrar mensagem de fim
+  const finalMsg = winner === 'player' ? '🎉 Parabéns! Você venceu!' : '💀 Você foi derrotado... Tente novamente!';
+  addLog(finalMsg);
 }
 
 // ========== AÇÕES DO PLAYER ==========
@@ -312,11 +324,11 @@ function mostrarTrocar() {
     return;
   }
   switchContainer.classList.remove('hidden');
-  switchContainer.innerHTML = '<strong>Trocar para:</strong><br>';
+  switchContainer.innerHTML = '<strong>🔁 Escolha um Cardmon:</strong><br>';
   vivos.forEach(c => {
     const btn = document.createElement('span');
     btn.className = 'switch-option';
-    btn.innerText = `${c.nome} ${c.emoji} ❤️${c.vida}/${c.vidaMax}`;
+    btn.innerText = `${c.emoji} ${c.nome}  ❤️${c.vida}/${c.vidaMax}  ⚡${c.energia}/${c.energiaMax}`;
     btn.onclick = () => {
       if (c === player.ativo) {
         addLog("Já está em campo!");
@@ -340,7 +352,7 @@ function mostrarItens() {
     return;
   }
   itemsContainer.classList.remove('hidden');
-  itemsContainer.innerHTML = '<strong>Usar item:</strong><br>';
+  itemsContainer.innerHTML = '<strong>🧪 Usar item:</strong><br>';
   for (let [item, qtd] of Object.entries(player.itens)) {
     if (qtd <= 0) continue;
     const btn = document.createElement('span');
@@ -389,6 +401,8 @@ function init() {
   itemsBtn.onclick = mostrarItens;
   fleeBtn.onclick = fugir;
 
+  // Limpar log inicial
+  logDiv.innerHTML = '';
   addLog("🔥 Batalha iniciada! Escolha sua ação.");
 }
 
