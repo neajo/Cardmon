@@ -3,82 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cardmon Battle | Pixel Edition</title>
+    <title>Cardmon Adventure</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="game-container">
-        <header class="game-header">
-            <div class="trainer-tag">TREINADOR: <span id="p-name">VITOR</span></div>
-            <div class="turn-badge">TURNO: <span id="turn-count">1</span></div>
-        </header>
+        <div id="world-screen">
+            <div id="map">
+                <div id="player" class="character"></div>
+                <div id="npc" class="character npc"></div>
+            </div>
+            <div class="instructions">USE AS SETAS (↑↓←→) PARA ANDAR ATÉ O NPC</div>
+        </div>
 
-        <main class="battle-arena">
-            <div class="side enemy-side">
-                <div class="status-panel enemy-panel">
-                    <div class="info">
-                        <span id="e-mon-name">BALAIO</span>
-                        <span id="e-mon-lv">Lv14</span>
+        <div id="battle-screen" class="hidden">
+            <div class="arena">
+                <div class="side enemy">
+                    <div class="status-box">
+                        <div class="info"><span>CORSOLA</span> <span class="lv">Lv84</span></div>
+                        <div class="hp-bar"><div id="e-hp" class="fill"></div></div>
                     </div>
-                    <div class="bar-container">
-                        <div class="bar-label">HP</div>
-                        <div class="bar-bg"><div id="e-hp-bar" class="bar-fill hp"></div></div>
-                    </div>
+                    <img id="e-sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/222.png" alt="enemy">
                 </div>
-                <div class="sprite-container">
-                    <div id="e-sprite" class="sprite floating">🌳</div>
-                    <div class="shadow"></div>
+
+                <div class="side player">
+                    <img id="p-sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/139.png" alt="player">
+                    <div class="status-box">
+                        <div class="info"><span>OMASTAR</span> <span class="lv">Lv82</span></div>
+                        <div class="hp-bar"><div id="p-hp" class="fill"></div></div>
+                        <div class="en-bar"><div id="p-en" class="fill"></div></div>
+                    </div>
                 </div>
             </div>
 
-            <div class="side player-side">
-                <div class="sprite-container">
-                    <div id="p-sprite" class="sprite floating">💧</div>
-                    <div class="shadow"></div>
-                </div>
-                <div class="status-panel player-panel">
-                    <div class="info">
-                        <span id="p-mon-name">KLEKLE</span>
-                        <span id="p-mon-lv">Lv10</span>
+            <div class="ui">
+                <div id="log">🔥 Uma batalha começou!</div>
+                <div id="actions" class="grid">
                     </div>
-                    <div class="bar-container">
-                        <div class="bar-label">HP</div>
-                        <div class="bar-bg"><div id="p-hp-bar" class="bar-fill hp"></div></div>
-                    </div>
-                    <div class="bar-container">
-                        <div class="bar-label">EN</div>
-                        <div class="bar-bg"><div id="p-en-bar" class="bar-fill energy"></div></div>
-                    </div>
-                </div>
-            </div>
-        </main>
-
-        <section class="ui-controller">
-            <div id="battle-log" class="log-window">
-                <p id="log-text">Prepare-se para a batalha!</p>
-            </div>
-
-            <div class="controls-grid">
-                <div id="attack-menu" class="action-grid"></div>
-                
-                <div class="meta-actions">
-                    <button onclick="game.handleSleep()" class="btn-meta">💤 DORMIR</button>
-                    <button onclick="game.toggleBag()" class="btn-meta">🎒 ITENS</button>
-                    <button onclick="game.runAway()" class="btn-meta">🏃 FUGIR</button>
-                </div>
-            </div>
-        </section>
-
-        <div id="bag-modal" class="modal hidden">
-            <div class="modal-content">
-                <h3>MOCHILA</h3>
-                <div id="item-list"></div>
-                <button onclick="game.toggleBag()" class="btn-close">FECHAR</button>
             </div>
         </div>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>
