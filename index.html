@@ -1,49 +1,78 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Cardmon Adventure</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="game-container">
+        <!-- Tela do mundo -->
         <div id="world-screen">
-            <div id="map">
-                <div id="player" class="character"></div>
-                <div id="npc" class="character npc"></div>
-            </div>
-            <div class="instructions">USE AS SETAS (↑↓←→) PARA ANDAR ATÉ O NPC</div>
+            <canvas id="world-canvas" width="800" height="600"></canvas>
+            <div class="controls-info">Use as setas do teclado para se mover</div>
         </div>
 
+        <!-- Tela de batalha (inicialmente escondida) -->
         <div id="battle-screen" class="hidden">
-            <div class="arena">
-                <div class="side enemy">
-                    <div class="status-box">
-                        <div class="info"><span>CORSOLA</span> <span class="lv">Lv84</span></div>
-                        <div class="hp-bar"><div id="e-hp" class="fill"></div></div>
+            <div class="battle-container">
+                <div class="opponent-area">
+                    <div class="status-card opponent-card">
+                        <div class="name-area">
+                            <span class="name" id="opponent-name">---</span>
+                            <span class="level">Lv<span id="opponent-level">1</span></span>
+                        </div>
+                        <div class="hp-bar-bg">
+                            <div class="hp-fill" id="opponent-hp-fill" style="width: 100%"></div>
+                        </div>
+                        <div class="hp-text"><span id="opponent-hp">0</span>/<span id="opponent-hp-max">0</span></div>
+                        <div class="energy-bar-bg">
+                            <div class="energy-fill" id="opponent-energy-fill" style="width: 100%"></div>
+                        </div>
+                        <div class="energy-text"><span id="opponent-energy">0</span>/<span id="opponent-energy-max">0</span></div>
                     </div>
-                    <img id="e-sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/222.png" alt="enemy">
+                    <img id="opponent-sprite" class="battle-sprite" alt="oponente">
                 </div>
 
-                <div class="side player">
-                    <img id="p-sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/139.png" alt="player">
-                    <div class="status-box">
-                        <div class="info"><span>OMASTAR</span> <span class="lv">Lv82</span></div>
-                        <div class="hp-bar"><div id="p-hp" class="fill"></div></div>
-                        <div class="en-bar"><div id="p-en" class="fill"></div></div>
+                <div class="vs-animation">VS</div>
+
+                <div class="player-area">
+                    <img id="player-sprite" class="battle-sprite" alt="jogador">
+                    <div class="status-card player-card">
+                        <div class="name-area">
+                            <span class="name" id="player-name">---</span>
+                            <span class="level">Lv<span id="player-level">1</span></span>
+                        </div>
+                        <div class="hp-bar-bg">
+                            <div class="hp-fill" id="player-hp-fill" style="width: 100%"></div>
+                        </div>
+                        <div class="hp-text"><span id="player-hp">0</span>/<span id="player-hp-max">0</span></div>
+                        <div class="energy-bar-bg">
+                            <div class="energy-fill" id="player-energy-fill" style="width: 100%"></div>
+                        </div>
+                        <div class="energy-text"><span id="player-energy">0</span>/<span id="player-energy-max">0</span></div>
                     </div>
                 </div>
-            </div>
 
-            <div class="ui">
-                <div id="log">🔥 Uma batalha começou!</div>
-                <div id="actions" class="grid">
-                    </div>
+                <div class="battle-log" id="battle-log">
+                    <div>🔥 Batalha iniciada!</div>
+                </div>
+
+                <div class="action-buttons" id="action-buttons"></div>
+                <div class="extra-actions">
+                    <button id="sleep-btn">💤 Dormir</button>
+                    <button id="switch-btn">🔄 Trocar</button>
+                    <button id="items-btn">🧪 Itens</button>
+                    <button id="flee-btn">🏃 Fugir</button>
+                </div>
+                <div id="switch-menu" class="menu-popup hidden"></div>
+                <div id="items-menu" class="menu-popup hidden"></div>
             </div>
         </div>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>
