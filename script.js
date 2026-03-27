@@ -11,6 +11,7 @@ class Ataque {
   }
 
   executar(usuario, alvo, bot = false) {
+    // Verifica acerto
     if (Math.random() * 100 > this.precisao) {
       addLog(`❌ ${usuario.nome} errou o ataque!`);
       return;
@@ -24,6 +25,7 @@ class Ataque {
       addLog(`${bot ? "⚔️ Inimigo" : "⚔️ Você"} usou ${this.nome}! Causou ${danoFinal} de dano em ${alvo.nome}.`);
     }
 
+    // Aplica efeitos
     if (this.efeito) {
       if (this.efeito.pessoal) this.aplicarBuff(usuario, this.efeito.pessoal, this.efeito.num || 0);
       if (this.efeito.inimigo) this.aplicarBuff(alvo, this.efeito.inimigo, this.efeito.num || 0);
@@ -50,6 +52,7 @@ class Cardmon {
     this.tipo = tipo;
     this.emoji = emoji;
     this.nivel = 1;
+    this.exp = 0;
     this.vidaMax = vidaMax;
     this.vida = vidaMax;
     this.energiaMax = energiaMax;
@@ -66,6 +69,45 @@ class Cardmon {
     this.buffAtk = 0;
     this.buffDef = 0;
     addLog(`💤 ${this.nome} descansou e recuperou ${ganho} energia! Buffs resetados.`);
+  }
+
+  ganharExp(quantidade) {
+    this.exp += quantidade;
+    addLog(`✨ ${this.nome} ganhou ${quantidade} de EXP!`);
+    while (this.exp >= this.nivel * 100) {
+      this.exp -= this.nivel * 100;
+      this.levelUp();
+    }
+  }
+
+  levelUp() {
+    this.nivel++;
+    this.vidaMax += 5;
+    this.energiaMax += 3;
+    this.vida = this.vidaMax;
+    this.energia = this.energiaMax;
+    addLog(`🎉 ${this.nome} subiu para o nível ${this.nivel}! Vida máxima +5, Energia máxima +3.`);
+    this.tentarEvoluir();
+  }
+
+  tentarEvoluir() {
+    for (let [evoCard, reqLevel] of Object.entries(this.evo || {})) {
+      if (this.nivel >= reqLevel) {
+        addLog(`🌟 ${this.nome} está evoluindo para ${evoCard.nome}!`);
+        // Copia todos os dados importantes
+        evoCard.nivel = this.nivel;
+        evoCard.exp = this.exp;
+        evoCard.vidaMax = this.vidaMax;
+        evoCard.vida = this.vida;
+        evoCard.energiaMax = this.energiaMax;
+        evoCard.energia = this.energia;
+        evoCard.buffAtk = this.buffAtk;
+        evoCard.buffDef = this.buffDef;
+        // Substituir a referência no array do treinador (será feito fora)
+        return evoCard;
+      }
+    }
+    return this;
   }
 }
 
@@ -155,6 +197,7 @@ const tapa = new Ataque('Tapa', 'normal', '🔘', 3, 2, 95);
 const borbulhar = new Ataque('Borbulhar', 'agua', '💧', 0, 1, 100, {inimigo:'precisao', num:-1});
 const afiar = new Ataque('Afiar', 'normal', '🔘', 0, 2, 100, {pessoal:'dano', num:2});
 
+// Evoluções
 const Karekudo = new Cardmon('Karekudo', 80, 50, ['agua','psi'], '💧🧠', []);
 const Kareka = new Cardmon('Kareka', 45, 30, ['agua'], '💧', [], {Karekudo:34});
 const KleKle = new Cardmon('KleKle', 10, 15, ['agua'], '💧', [tapa, borbulhar], {Kareka:14});
@@ -170,7 +213,7 @@ const Balaio = new Cardmon('Balaio', 14, 15, ['grama'], '🌳', [tapa, afiar], {
 const pocaoP = new Item('Poção-P', 5, {vida:5});
 
 let player = new Player('Vitor', [KleKle], {[pocaoP]: 2});
-let bot = new BOT('BOT1', [Balaio, Totoka]);
+let bot = new BOT('Treinador Selvagem', [Balaio, Totoka]);
 
 // ========== VARIÁVEIS GLOBAIS ==========
 let battleActive = true;
@@ -187,6 +230,7 @@ const switchBtn = document.getElementById('switch-btn');
 const itemsBtn = document.getElementById('items-btn');
 const fleeBtn = document.getElementById('flee-btn');
 const itemCountSpan = document.getElementById('item-count');
+const playerLevelSpan = document.getElementById('player-level');
 
 // ========== FUNÇÕES AUXILIARES ==========
 function addLog(msg) {
@@ -194,6 +238,7 @@ function addLog(msg) {
   p.textContent = msg;
   logDiv.appendChild(p);
   p.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  // Limita o tamanho do log
   if (logDiv.children.length > 40) logDiv.removeChild(logDiv.children[0]);
 }
 
@@ -208,6 +253,7 @@ function updateUI() {
   document.getElementById('player-energy-max').innerText = p.energiaMax;
   document.getElementById('player-hp-fill').style.width = (p.vida / p.vidaMax * 100) + '%';
   document.getElementById('player-energy-fill').style.width = (p.energia / p.energiaMax * 100) + '%';
+  playerLevelSpan.innerText = p.nivel;
 
   // Oponente
   const o = bot.ativo;
@@ -220,15 +266,15 @@ function updateUI() {
   document.getElementById('opponent-hp-fill').style.width = (o.vida / o.vidaMax * 100) + '%';
   document.getElementById('opponent-energy-fill').style.width = (o.energia / o.energiaMax * 100) + '%';
 
-  // Atualizar contador de itens
-  let totalItems = 0;
-  for (let qtd of Object.values(player.itens)) totalItems += qtd;
-  itemCountSpan.innerText = totalItems;
+  // Contador de itens
+  let total = 0;
+  for (let qtd of Object.values(player.itens)) total += qtd;
+  itemCountSpan.innerText = total;
 }
 
 function renderMoves() {
   moveContainer.innerHTML = '';
-  player.ativo.atks.forEach((atk, idx) => {
+  player.ativo.atks.forEach(atk => {
     const btn = document.createElement('button');
     btn.className = 'move-btn';
     btn.innerHTML = `${atk.emoji} ${atk.nome} (${atk.custo}⚡)`;
@@ -252,6 +298,7 @@ function renderMoves() {
 }
 
 async function afterPlayerAction() {
+  // Verifica se inimigo desmaiou
   if (bot.ativo.vida <= 0) {
     addLog(`${bot.ativo.nome} desmaiou!`);
     const vivosBot = bot.getVivos();
@@ -274,6 +321,7 @@ async function botTurn() {
   bot.turno();
   updateUI();
 
+  // Verifica se jogador desmaiou
   if (player.ativo.vida <= 0) {
     addLog(`${player.ativo.nome} desmaiou!`);
     const vivosPlayer = player.getVivos();
@@ -298,6 +346,23 @@ function endBattle(winner) {
   battleActive = false;
   waitingForPlayer = false;
   addLog(`🏆 FIM DE JOGO! Vencedor: ${winner === 'player' ? player.nome : bot.nome}!`);
+
+  if (winner === 'player') {
+    // Dá experiência ao Cardmon ativo
+    player.ativo.ganharExp(50);
+    // Verifica evolução e substitui na party se necessário
+    const evolved = player.ativo.tentarEvoluir();
+    if (evolved !== player.ativo) {
+      const idx = player.cardmons.indexOf(player.ativo);
+      player.cardmons[idx] = evolved;
+      player.ativo = evolved;
+      addLog(`🎉 ${evolved.nome} evoluiu!`);
+      updateUI();
+      renderMoves();
+    }
+  }
+
+  // Desabilita todos os botões
   document.querySelectorAll('.move-btn, .action-btn').forEach(btn => btn.disabled = true);
   const finalMsg = winner === 'player' ? '🎉 PARABÉNS! VOCÊ VENCEU!' : '💀 VOCÊ FOI DERROTADO... TENTE NOVAMENTE!';
   addLog(finalMsg);
