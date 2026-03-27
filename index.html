@@ -9,7 +9,7 @@
 </head>
 <body>
     <div id="game-container">
-        <!-- Tela do mundo -->
+        <!-- Tela do mundo (overworld) -->
         <div id="world-screen">
             <canvas id="world-canvas" width="800" height="600"></canvas>
             <div class="controls-info">Use as setas do teclado para se mover</div>
@@ -33,13 +33,13 @@
                         </div>
                         <div class="energy-text"><span id="opponent-energy">0</span>/<span id="opponent-energy-max">0</span></div>
                     </div>
-                    <img id="opponent-sprite" class="battle-sprite" alt="oponente">
+                    <div class="battle-sprite" id="opponent-sprite">❓</div>
                 </div>
 
                 <div class="vs-animation">VS</div>
 
                 <div class="player-area">
-                    <img id="player-sprite" class="battle-sprite" alt="jogador">
+                    <div class="battle-sprite" id="player-sprite">❓</div>
                     <div class="status-card player-card">
                         <div class="name-area">
                             <span class="name" id="player-name">---</span>
