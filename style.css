@@ -1,0 +1,196 @@
+* {
+  box-sizing: border-box;
+  user-select: none;
+}
+
+body {
+  background: linear-gradient(145deg, #2a6b2f 0%, #1e4a21 100%);
+  font-family: 'Segoe UI', 'Press Start 2P', 'Courier New', monospace;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  padding: 20px;
+}
+
+.game-container {
+  max-width: 1100px;
+  width: 100%;
+  background: #2c2c2c;
+  border-radius: 32px;
+  box-shadow: 0 20px 35px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+  overflow: hidden;
+  border: 2px solid #f5d742;
+}
+
+.arena {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 30px;
+  background: #3e5a3c;
+  background-image: radial-gradient(circle at 20% 40%, rgba(80,120,70,0.4) 2%, transparent 2.5%);
+  background-size: 28px 28px;
+  border-bottom: 4px solid #f5b642;
+}
+
+.cardmon-card {
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(4px);
+  border-radius: 28px;
+  padding: 15px 20px;
+  width: 260px;
+  color: white;
+  text-shadow: 2px 2px 0 #000;
+  box-shadow: 0 10px 0 #1a1a1a;
+  transition: transform 0.2s;
+}
+
+.cardmon-card.opponent {
+  background: rgba(30,20,50,0.8);
+}
+
+.cardmon-name {
+  font-size: 1.7rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 2px solid #ffcc44;
+  padding-bottom: 6px;
+  margin-bottom: 12px;
+}
+
+.emoji {
+  font-size: 2rem;
+}
+
+.stats {
+  font-size: 1.2rem;
+  background: #111;
+  padding: 8px 12px;
+  border-radius: 30px;
+  margin: 8px 0;
+}
+
+.hp-bar {
+  background: #555;
+  border-radius: 20px;
+  height: 16px;
+  width: 100%;
+  overflow: hidden;
+  margin: 5px 0;
+}
+
+.hp-fill {
+  background: #ff4d4d;
+  width: 100%;
+  height: 100%;
+  transition: width 0.2s;
+}
+
+.energy-bar {
+  background: #ffe066;
+  width: 0%;
+  height: 100%;
+  transition: width 0.2s;
+}
+
+.action-panel {
+  background: #1e2a1c;
+  padding: 20px;
+  border-top: 4px solid #f5b642;
+}
+
+.moves {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.move-btn {
+  background: #2b3b2a;
+  border: none;
+  font-family: monospace;
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 8px 16px;
+  border-radius: 50px;
+  color: #f9f3cf;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #121212;
+  transition: 0.05s linear;
+}
+
+.move-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #121212;
+}
+
+.move-btn.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  filter: grayscale(0.2);
+}
+
+.action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+  border-top: 1px solid #5a7540;
+  padding-top: 20px;
+}
+
+.action {
+  background: #5f4c2b;
+  color: #ffefc0;
+}
+
+.log {
+  background: #0a0f0a;
+  border-radius: 24px;
+  padding: 15px;
+  height: 140px;
+  overflow-y: auto;
+  font-family: monospace;
+  font-size: 0.9rem;
+  color: #b9f6ca;
+  border: 1px solid #7b5a2e;
+}
+
+button {
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.switch-list {
+  background: #2f3a2a;
+  border-radius: 20px;
+  padding: 12px;
+  margin-top: 10px;
+}
+
+.switch-option {
+  background: #495c40;
+  display: inline-block;
+  margin: 4px;
+  padding: 4px 12px;
+  border-radius: 40px;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.hidden {
+  display: none;
+}
+
+.status-badge {
+  font-size: 0.8rem;
+  background: #222;
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 20px;
+  margin-left: 8px;
+}
