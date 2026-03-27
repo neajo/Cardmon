@@ -1,91 +1,84 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Cardmon Battle</title>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cardmon Battle | Pixel Edition</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="game-container">
-    <div class="game-header">
-      <h1>⚡ CARDMON BATTLE ⚡</h1>
-      <div class="trainer-info">
-        <span>👤 <span id="player-name-tag">VITOR</span></span>
-        <span>🏆 NÍVEL <span id="player-level">1</span></span>
-        <span>🎒 ITENS: <span id="item-count">2</span></span>
-      </div>
+    <div id="game-container">
+        <header class="game-header">
+            <div class="trainer-tag">TREINADOR: <span id="p-name">VITOR</span></div>
+            <div class="turn-badge">TURNO: <span id="turn-count">1</span></div>
+        </header>
+
+        <main class="battle-arena">
+            <div class="side enemy-side">
+                <div class="status-panel enemy-panel">
+                    <div class="info">
+                        <span id="e-mon-name">BALAIO</span>
+                        <span id="e-mon-lv">Lv14</span>
+                    </div>
+                    <div class="bar-container">
+                        <div class="bar-label">HP</div>
+                        <div class="bar-bg"><div id="e-hp-bar" class="bar-fill hp"></div></div>
+                    </div>
+                </div>
+                <div class="sprite-container">
+                    <div id="e-sprite" class="sprite floating">🌳</div>
+                    <div class="shadow"></div>
+                </div>
+            </div>
+
+            <div class="side player-side">
+                <div class="sprite-container">
+                    <div id="p-sprite" class="sprite floating">💧</div>
+                    <div class="shadow"></div>
+                </div>
+                <div class="status-panel player-panel">
+                    <div class="info">
+                        <span id="p-mon-name">KLEKLE</span>
+                        <span id="p-mon-lv">Lv10</span>
+                    </div>
+                    <div class="bar-container">
+                        <div class="bar-label">HP</div>
+                        <div class="bar-bg"><div id="p-hp-bar" class="bar-fill hp"></div></div>
+                    </div>
+                    <div class="bar-container">
+                        <div class="bar-label">EN</div>
+                        <div class="bar-bg"><div id="p-en-bar" class="bar-fill energy"></div></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <section class="ui-controller">
+            <div id="battle-log" class="log-window">
+                <p id="log-text">Prepare-se para a batalha!</p>
+            </div>
+
+            <div class="controls-grid">
+                <div id="attack-menu" class="action-grid"></div>
+                
+                <div class="meta-actions">
+                    <button onclick="game.handleSleep()" class="btn-meta">💤 DORMIR</button>
+                    <button onclick="game.toggleBag()" class="btn-meta">🎒 ITENS</button>
+                    <button onclick="game.runAway()" class="btn-meta">🏃 FUGIR</button>
+                </div>
+            </div>
+        </section>
+
+        <div id="bag-modal" class="modal hidden">
+            <div class="modal-content">
+                <h3>MOCHILA</h3>
+                <div id="item-list"></div>
+                <button onclick="game.toggleBag()" class="btn-close">FECHAR</button>
+            </div>
+        </div>
     </div>
 
-    <div class="arena">
-      <!-- Cardmon inimigo -->
-      <div class="cardmon-card opponent">
-        <div class="pixel-sprite" id="opponent-sprite">
-          <span class="pixel-emoji" id="opponent-emoji">❓</span>
-        </div>
-        <div class="cardmon-name" id="opponent-name">---</div>
-        <div class="stats-panel">
-          <div class="stat-bar">
-            <span class="stat-icon">❤️</span>
-            <div class="bar-bg">
-              <div class="bar-fill hp-fill" id="opponent-hp-fill" style="width: 0%"></div>
-            </div>
-            <span class="stat-value"><span id="opponent-hp">0</span>/<span id="opponent-hp-max">0</span></span>
-          </div>
-          <div class="stat-bar">
-            <span class="stat-icon">⚡</span>
-            <div class="bar-bg">
-              <div class="bar-fill energy-fill" id="opponent-energy-fill" style="width: 0%"></div>
-            </div>
-            <span class="stat-value"><span id="opponent-energy">0</span>/<span id="opponent-energy-max">0</span></span>
-          </div>
-        </div>
-      </div>
-
-      <div class="vs-pixel">VS</div>
-
-      <!-- Cardmon do jogador -->
-      <div class="cardmon-card player">
-        <div class="pixel-sprite" id="player-sprite">
-          <span class="pixel-emoji" id="player-emoji">❓</span>
-        </div>
-        <div class="cardmon-name" id="player-name">---</div>
-        <div class="stats-panel">
-          <div class="stat-bar">
-            <span class="stat-icon">❤️</span>
-            <div class="bar-bg">
-              <div class="bar-fill hp-fill" id="player-hp-fill" style="width: 0%"></div>
-            </div>
-            <span class="stat-value"><span id="player-hp">0</span>/<span id="player-hp-max">0</span></span>
-          </div>
-          <div class="stat-bar">
-            <span class="stat-icon">⚡</span>
-            <div class="bar-bg">
-              <div class="bar-fill energy-fill" id="player-energy-fill" style="width: 0%"></div>
-            </div>
-            <span class="stat-value"><span id="player-energy">0</span>/<span id="player-energy-max">0</span></span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="action-panel">
-      <div class="moves" id="move-buttons"></div>
-      <div class="action-buttons">
-        <button class="action-btn" id="sleep-btn">💤 DORMIR</button>
-        <button class="action-btn" id="switch-btn">🔄 TROCAR</button>
-        <button class="action-btn" id="items-btn">🧪 ITENS</button>
-        <button class="action-btn" id="flee-btn">🏃 FUGIR</button>
-      </div>
-      <div id="switch-container" class="popup-panel hidden"></div>
-      <div id="items-container" class="popup-panel hidden"></div>
-      <div class="log" id="log">
-        <div>🔥 BATALHA INICIADA!</div>
-      </div>
-    </div>
-  </div>
-
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
