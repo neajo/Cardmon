@@ -87,9 +87,13 @@ body {
 }
 
 .battle-sprite {
+    font-size: 6rem;
     width: 160px;
     height: 160px;
-    image-rendering: pixelated;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
     filter: drop-shadow(4px 4px 0 #000);
     animation: float 2s ease-in-out infinite;
 }
@@ -265,8 +269,8 @@ button:active {
 
 /* Responsivo */
 @media (max-width: 800px) {
-    .battle-sprite { width: 120px; height: 120px; }
-    .opponent-area, .player-area { width: 260px; }
+    .battle-sprite { font-size: 4rem; width: 100px; height: 100px; }
+    .opponent-area, .player-area { width: 240px; }
     .action-buttons, .extra-actions { font-size: 0.6rem; }
     button { font-size: 0.6rem; padding: 6px 10px; }
 }
