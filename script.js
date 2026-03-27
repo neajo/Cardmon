@@ -11,7 +11,6 @@ class Ataque {
   }
 
   executar(usuario, alvo, bot = false) {
-    // Verifica acerto
     if (Math.random() * 100 > this.precisao) {
       addLog(`❌ ${usuario.nome} errou o ataque!`);
       return;
@@ -25,7 +24,6 @@ class Ataque {
       addLog(`${bot ? "⚔️ Inimigo" : "⚔️ Você"} usou ${this.nome}! Causou ${danoFinal} de dano em ${alvo.nome}.`);
     }
 
-    // Aplica efeitos
     if (this.efeito) {
       if (this.efeito.pessoal) this.aplicarBuff(usuario, this.efeito.pessoal, this.efeito.num || 0);
       if (this.efeito.inimigo) this.aplicarBuff(alvo, this.efeito.inimigo, this.efeito.num || 0);
@@ -94,7 +92,7 @@ class Cardmon {
     for (let [evoCard, reqLevel] of Object.entries(this.evo || {})) {
       if (this.nivel >= reqLevel) {
         addLog(`🌟 ${this.nome} está evoluindo para ${evoCard.nome}!`);
-        // Copia todos os dados importantes
+        // Copiar dados
         evoCard.nivel = this.nivel;
         evoCard.exp = this.exp;
         evoCard.vidaMax = this.vidaMax;
@@ -197,7 +195,6 @@ const tapa = new Ataque('Tapa', 'normal', '🔘', 3, 2, 95);
 const borbulhar = new Ataque('Borbulhar', 'agua', '💧', 0, 1, 100, {inimigo:'precisao', num:-1});
 const afiar = new Ataque('Afiar', 'normal', '🔘', 0, 2, 100, {pessoal:'dano', num:2});
 
-// Evoluções
 const Karekudo = new Cardmon('Karekudo', 80, 50, ['agua','psi'], '💧🧠', []);
 const Kareka = new Cardmon('Kareka', 45, 30, ['agua'], '💧', [], {Karekudo:34});
 const KleKle = new Cardmon('KleKle', 10, 15, ['agua'], '💧', [tapa, borbulhar], {Kareka:14});
@@ -238,7 +235,6 @@ function addLog(msg) {
   p.textContent = msg;
   logDiv.appendChild(p);
   p.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  // Limita o tamanho do log
   if (logDiv.children.length > 40) logDiv.removeChild(logDiv.children[0]);
 }
 
@@ -266,15 +262,15 @@ function updateUI() {
   document.getElementById('opponent-hp-fill').style.width = (o.vida / o.vidaMax * 100) + '%';
   document.getElementById('opponent-energy-fill').style.width = (o.energia / o.energiaMax * 100) + '%';
 
-  // Contador de itens
-  let total = 0;
-  for (let qtd of Object.values(player.itens)) total += qtd;
-  itemCountSpan.innerText = total;
+  // Itens
+  let totalItems = 0;
+  for (let qtd of Object.values(player.itens)) totalItems += qtd;
+  itemCountSpan.innerText = totalItems;
 }
 
 function renderMoves() {
   moveContainer.innerHTML = '';
-  player.ativo.atks.forEach(atk => {
+  player.ativo.atks.forEach((atk) => {
     const btn = document.createElement('button');
     btn.className = 'move-btn';
     btn.innerHTML = `${atk.emoji} ${atk.nome} (${atk.custo}⚡)`;
@@ -298,7 +294,6 @@ function renderMoves() {
 }
 
 async function afterPlayerAction() {
-  // Verifica se inimigo desmaiou
   if (bot.ativo.vida <= 0) {
     addLog(`${bot.ativo.nome} desmaiou!`);
     const vivosBot = bot.getVivos();
@@ -321,7 +316,6 @@ async function botTurn() {
   bot.turno();
   updateUI();
 
-  // Verifica se jogador desmaiou
   if (player.ativo.vida <= 0) {
     addLog(`${player.ativo.nome} desmaiou!`);
     const vivosPlayer = player.getVivos();
@@ -348,9 +342,9 @@ function endBattle(winner) {
   addLog(`🏆 FIM DE JOGO! Vencedor: ${winner === 'player' ? player.nome : bot.nome}!`);
 
   if (winner === 'player') {
-    // Dá experiência ao Cardmon ativo
+    // Dar experiência ao Cardmon ativo do vencedor
     player.ativo.ganharExp(50);
-    // Verifica evolução e substitui na party se necessário
+    // Verificar evolução e substituir na party se necessário
     const evolved = player.ativo.tentarEvoluir();
     if (evolved !== player.ativo) {
       const idx = player.cardmons.indexOf(player.ativo);
@@ -362,7 +356,6 @@ function endBattle(winner) {
     }
   }
 
-  // Desabilita todos os botões
   document.querySelectorAll('.move-btn, .action-btn').forEach(btn => btn.disabled = true);
   const finalMsg = winner === 'player' ? '🎉 PARABÉNS! VOCÊ VENCEU!' : '💀 VOCÊ FOI DERROTADO... TENTE NOVAMENTE!';
   addLog(finalMsg);
