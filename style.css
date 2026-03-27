@@ -4,7 +4,6 @@
   box-sizing: border-box;
   image-rendering: crisp-edges;
   image-rendering: pixelated;
-  image-rendering: pixelated;
 }
 
 body {
@@ -304,7 +303,6 @@ body {
   display: none;
 }
 
-/* Responsivo */
 @media (max-width: 850px) {
   .arena {
     flex-direction: column;
